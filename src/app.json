@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "geb-training",
+    "slug": "geb-training",
+    "version": "1.2.1",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#071566"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
+    "ios": {
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "O aplicativo precisa deu sua permissão para acessar seus arquivos"
+      },
+      "bundleIdentifier": "com.app-c.appGeb",
+      "buildNumber": "9"
+    },
+    "android": {
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.appc.gebtraining",
+      "versionCode": 9
+    }
+  }
+}
