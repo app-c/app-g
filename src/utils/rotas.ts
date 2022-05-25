@@ -13,6 +13,8 @@ import { TabBarApp } from "../routes/TabBarApp";
 import { StacKMembros } from "../routes/StackMembros";
 import { StackB2b } from "../routes/StackB2b";
 import theme from "../global/styles/theme";
+import Push from "../components/push";
+import { Padrinho } from "../pages/Padrinho";
 
 export const rotas = [
    {
@@ -71,6 +73,20 @@ export const rotas = [
       component: StackB2b,
       icon: "users",
    },
+   {
+      focus: theme.colors.focus,
+      color: theme.colors.focus_light_3,
+      name: "APADRINHAMENTO",
+      component: Padrinho,
+      icon: "users",
+   },
+   // {
+   //    focus: theme.colors.focus,
+   //    color: theme.colors.focus_light_3,
+   //    name: "push",
+   //    component: Push,
+   //    icon: "users",
+   // },
 ];
 
 export const rotasAdm = [

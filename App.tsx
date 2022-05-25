@@ -24,6 +24,7 @@ import { ThemeProvider } from "styled-components/native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox, Text, View } from "react-native";
+import { NativeBaseProvider } from "native-base";
 import theme from "./src/global/styles/theme";
 import AppProvider from "./src/hooks";
 import { Route } from "./src/routes";
@@ -49,9 +50,11 @@ export default function App() {
          <ThemeProvider theme={theme}>
             <StatusBar style="light" hidden />
             <AppProvider>
-               <View style={{ flex: 1 }}>
-                  <Route />
-               </View>
+               <NativeBaseProvider>
+                  <View style={{ flex: 1 }}>
+                     <Route />
+                  </View>
+               </NativeBaseProvider>
             </AppProvider>
          </ThemeProvider>
       </NavigationContainer>

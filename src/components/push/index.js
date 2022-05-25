@@ -1,11 +1,18 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable consistent-return */
-import Constants from "expo-constants";
+import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import React, { useState, useEffect, useRef } from "react";
-import { Text, View, Button, Platform, Alert } from "react-native";
+import { Text, View, Button, Platform } from "react-native";
+import mess from '@react-native-firebase/messaging'
 
-export default function Push() {
+Notifications.setNotificationHandler({
+   handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+   }),
+});
+
+export default function App() {
    const [expoPushToken, setExpoPushToken] = useState("");
    const [notification, setNotification] = useState(false);
    const notificationListener = useRef();
@@ -44,7 +51,7 @@ export default function Push() {
             justifyContent: "space-around",
          }}
       >
-         <Text>Your expo push token {expoPushToken}</Text>
+         <Text>Your expo push token: {expoPushToken}</Text>
          <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Text>
                Title: {notification && notification.request.content.title}{" "}
@@ -70,36 +77,48 @@ export default function Push() {
 
 // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.dev/notifications
 async function sendPushNotification(expoPushToken) {
+   console.log('ok')
+
    const message = {
-      to: "ExponentPushToken[iVme_1O3gAI8DIDNqriaDq]",
+      to: expoPushToken,
       sound: "default",
-      title: "Alguem esta consumindo seu produto",
-      body: `cliente está adiquirindo: `,
-      // priority: 'MAX',
+      title: "Original Title",
+      body: "And here is the body!",
+      data: { someData: "goes here" },
    };
 
-   await fetch("https://fcm.googleapis.com/fcm/send", {
+      await fetch('https://fcm.googleapis.com/fcm/send', {
+   method: 'POST',
+   headers: {
+      'Content-Type': 'application/json',
+      Authorization: `key=AIzaSyA0C-FzdLA4NeSQ69LzhjJyDRJEB43q_0Q`,
+   },
+   body: JSON.stringify({
+      to: expoPushToken,
+      priority: 'normal',
+      data: {
+         experienceId: '@app-c/appg',
+         scopeKey: '@app-c/appg',
+         title: "\uD83D\uDCE7 You've got mail",
+         message: 'Hello world! \uD83C\uDF10',
+      },
+   }),
+   }).then(h => console.log(h)).catch(h => console.log(h));
+
+   await fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
       headers: {
+         Accept: "application/json",
+         "Accept-encoding": "gzip, deflate",
          "Content-Type": "application/json",
-         Authorization: `key=<AIzaSyA0C-FzdLA4NeSQ69LzhjJyDRJEB43q_0Q>`,
       },
-      body: JSON.stringify({
-         to: expoPushToken,
-         priority: "normal",
-         data: {
-            experienceId: "@app-c/app-g",
-            scopeKey: "@app-c/app-g",
-            title: "\uD83D\uDCE7 You've got mail",
-            message: "Hello world! \uD83C\uDF10",
-         },
-      }),
+      body: JSON.stringify(message),
    });
 }
 
 async function registerForPushNotificationsAsync() {
    let token;
-   if (Constants.isDevice) {
+   if (Device.isDevice) {
       const { status: existingStatus } =
          await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
@@ -108,13 +127,13 @@ async function registerForPushNotificationsAsync() {
          finalStatus = status;
       }
       if (finalStatus !== "granted") {
-         Alert.alert("Failed to get push token for push notification!");
+         alert("Failed to get push token for push notification!");
          return;
       }
       token = (await Notifications.getDevicePushTokenAsync()).data;
       console.log(token);
    } else {
-      Alert.alert("Must use physical device for Push Notifications");
+      alert("Must use physical device for Push Notifications");
    }
 
    if (Platform.OS === "android") {

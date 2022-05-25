@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Form } from "@unform/mobile";
 import fire from "@react-native-firebase/firestore";
+import { TextArea } from "native-base";
 import { HeaderContaponent } from "../../components/HeaderComponent";
 import {
    BoxButton,
@@ -27,6 +28,7 @@ import { useAuth } from "../../hooks/AuthContext";
 import { Box } from "../FindMembro/styles";
 import { InputCasdastro } from "../../components/InputsCadastro";
 import { colecao } from "../../collection";
+import theme from "../../global/styles/theme";
 
 export function Indicacoes() {
    const { user, orderIndicacao, listUser } = useAuth();
@@ -151,17 +153,17 @@ export function Indicacoes() {
                   }}
                >
                   <Title>Descriçao</Title>
-                  <Title>{descricao.length}/70</Title>
+                  <Title>{descricao.length}/100</Title>
                </View>
-               <BoxTextInput>
-                  <Input
-                     multiline
-                     maxLength={70}
-                     onChangeText={setDescricao}
-                     value={descricao}
-                     scrollEnabled
-                  />
-               </BoxTextInput>
+               <TextArea
+                  h="20%"
+                  borderRadius={10}
+                  maxLength={100}
+                  value={descricao}
+                  onChangeText={(h) => setDescricao(h)}
+                  fontFamily={theme.fonts.regular}
+                  fontSize={14}
+               />
 
                <BoxInput>
                   <Input

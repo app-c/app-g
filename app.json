@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "app-g",
-    "slug": "app-g",
+    "name": "appg",
+    "slug": "appg",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
