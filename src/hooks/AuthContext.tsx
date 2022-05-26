@@ -14,6 +14,7 @@ import Auth from "@react-native-firebase/auth";
 import Firestore from "@react-native-firebase/firestore";
 
 import { format } from "date-fns";
+import { boolean } from "yup";
 import {
    IOrderB2b,
    IOrderIndication,
@@ -37,6 +38,9 @@ interface SignInCred {
 
 interface AuthContexData {
    user: IUserDto | null;
+   errPass: boolean;
+   errEmail: boolean;
+   erroEmail: boolean;
    loading: boolean;
    signIn(credential: SignInCred): Promise<void>;
    transactionAdd: (valor: ITransaction) => void;
@@ -56,6 +60,9 @@ export const AuthContext = createContext<AuthContexData>({} as AuthContexData);
 export const AuthProvider: React.FC = ({ children }) => {
    const [loading, setLoading] = useState(true);
    const [user, setUser] = useState<IUserDto | null>(null);
+   const [errEmail, setErrEmail] = useState(false);
+   const [errPass, setErrPass] = useState(false);
+   const [erroEmail, setErroEmail] = useState(false);
 
    const [listUser, setListUser] = useState<IUserDto[]>([]);
 
@@ -77,7 +84,7 @@ export const AuthProvider: React.FC = ({ children }) => {
    }, [LoadingUser]);
 
    const signIn = useCallback(async ({ email, senha }) => {
-      Auth()
+      await Auth()
          .signInWithEmailAndPassword(email, senha)
          .then((au) => {
             Firestore()
@@ -137,18 +144,27 @@ export const AuthProvider: React.FC = ({ children }) => {
                      "Não foi possível carregar os dados do usuário"
                   );
                });
-         })
-         .catch((err) => {
-            const { code } = err;
-            if (
-               code === "auth/user-not-found" ||
-               code === "auth/wrong-password"
-            ) {
-               return Alert.alert("Login", "usuário ou senha incorreto");
-            }
-            return Alert.alert("Login", "usuário nao encontrado");
          });
+      // .catch((err) => {
+      //    const { code } = err;
+      //    console.log(code);
+      //    if (code === "auth/user-not-found") {
+      //       setErrEmail(true);
+      //       return Alert.alert("Login", "email incorreto");
+      //    }
+
+      //    if (code === "auth/wrong-password") {
+      //       setErrEmail(true);
+      //       return Alert.alert("Login", "email incorreto");
+      //    }
+      //    return Alert.alert("Login", "usuário nao encontrado");
+      // });
    }, []);
+
+   useEffect(() => {
+      setErroEmail(errEmail);
+      console.log(errEmail);
+   }, [errEmail]);
 
    //* ORDERS.................................................................
 
@@ -278,6 +294,9 @@ export const AuthProvider: React.FC = ({ children }) => {
             orderB2b,
             orderIndicacao,
             orderTransaction,
+            errEmail,
+            errPass,
+            erroEmail,
          }}
       >
          {children}
