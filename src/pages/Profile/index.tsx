@@ -77,13 +77,12 @@ export function Profile() {
    const [workName, setWorkName] = useState("");
    const [CPF, setCpf] = useState(user.CPF);
    const [cnpj, setCnpj] = useState(user.CNPJ);
-   const [linkW, setLinkW] = useState(user.links[0]);
-   const [linkF, setLinkF] = useState(user.links[1]);
-   const [linkI, setLinkI] = useState(user.links[2]);
-   const [linkMaps, setLinkMaps] = useState(user.links[3]);
+   const [linkSite, setLinkSite] = useState(null);
+   const [linkF, setLinkF] = useState(null);
+   const [linkI, setLinkI] = useState(null);
+   const [linkMaps, setLinkMaps] = useState(null);
    const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl);
    const [logoUrl, setLogorUrl] = useState(user.logoUrl);
-   const [uri, setUri] = useState("");
 
    // TODO MODAL
    const [ramo, setRamo] = useState(user.ramo);
@@ -115,15 +114,15 @@ export function Profile() {
    }, []);
 
    useEffect(() => {
+      setLinkF(user.links.face);
+      setLinkI(user.links.insta);
+      setLinkMaps(user.links.maps);
+      setLinkSite(user.links.site);
       setEmail(user.email);
       setWhats(user.whats);
       setWorkName(user.workName);
       setCnpj(String(user.CNPJ));
       setCpf(String(user.CPF));
-      setLinkW(user.links[0] ? user.links[0] : "");
-      setLinkF(user.links[1] ? user.links[1] : "");
-      setLinkI(user.links[2] ? user.links[2] : "");
-      setLinkMaps(user.links[3] ? user.links[3] : "");
    }, [user.CNPJ, user.CPF, user.email, user.links, user.whats, user.workName]);
 
    const handleImagePiker = useCallback(async () => {
@@ -147,7 +146,7 @@ export function Profile() {
          const photoUrl = await reference.getDownloadURL();
          setAvatarUrl(photoUrl);
       }
-   }, [user.id]);
+   }, []);
 
    const handleLogo = useCallback(async () => {
       setLoading(true);
@@ -195,7 +194,12 @@ export function Profile() {
          ramo,
          enquadramento,
          padrinhQuantity: user.padrinhQuantity,
-         links: [linkF, linkI, linkMaps],
+         links: {
+            site: linkSite || "site",
+            maps: linkMaps || "site",
+            insta: linkI || "site",
+            face: linkF || "site",
+         },
          avatarUrl,
          logoUrl,
       };
@@ -214,12 +218,16 @@ export function Profile() {
             email,
             ramo,
             enquadramento,
-            links: [linkF, linkI, linkMaps],
+            links: {
+               site: linkSite || "site",
+               maps: linkMaps || "site",
+               insta: linkI || "site",
+               face: linkF || "site",
+            },
             avatarUrl,
             logoUrl,
          })
          .finally(() => updateUser(formData))
-
          .catch((err) => console.log(err.code));
 
       Alert.alert("Perfil alterado com sucesso!");
@@ -233,6 +241,7 @@ export function Profile() {
       linkF,
       linkI,
       linkMaps,
+      linkSite,
       logoUrl,
       navigate,
       nome,
@@ -244,6 +253,8 @@ export function Profile() {
       whats,
       workName,
    ]);
+
+   console.log(linkF, user.links);
 
    return (
       <Container>
@@ -348,6 +359,7 @@ export function Profile() {
                         />
                      </BoxInput>
                   </BoxFormularios>
+
                   <BoxFormularios>
                      <BoxInput>
                         <TitleHeader style={{ right: 10 }}>CPF</TitleHeader>
@@ -408,11 +420,12 @@ export function Profile() {
                         </BoxTogle>
                      </View>
                   </BoxFormularios>
+
                   <BoxFormularios>
-                     <TitleHeader>LINK WHATS</TitleHeader>
+                     <TitleHeader>LINK SITE</TitleHeader>
                      <Input
-                        value={linkW}
-                        onChangeText={(h) => setLinkW(h)}
+                        value={linkSite}
+                        onChangeText={(h) => setLinkSite(h)}
                         name="whatLind"
                         icon=""
                      />

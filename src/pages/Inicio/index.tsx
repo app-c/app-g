@@ -270,8 +270,7 @@ export function Inicio() {
    }, []);
 
    // todo TRANSAÇÃO.......................................................................
-
-   const handleTransaction = useCallback(
+   const handleValidateTransaction = useCallback(
       async (
          prestador_id: string,
          consumidor: string,
@@ -309,9 +308,9 @@ export function Inicio() {
       []
    );
 
-   const DeleteTransaction = useCallback(async (id: string) => {
-      const ref = fire()
-         .collection(colecao.transaction)
+   const DeleteOrderTransaction = useCallback(async (id: string) => {
+      fire()
+         .collection(colecao.orderTransaction)
          .doc(id)
          .delete()
          .then(() => Alert.alert("Transação deletada"));
@@ -468,9 +467,6 @@ export function Inicio() {
 
       return () => load();
    }, [user.id]);
-
-   const anoPass = new Date(Date.now()).getFullYear() - 1;
-   const anoAtual = new Date(Date.now()).getFullYear();
 
    useFocusEffect(
       useCallback(() => {
@@ -719,7 +715,7 @@ export function Inicio() {
                   <View key={h.id}>
                      <MessageComponent
                         confirmar={() => {
-                           handleTransaction(
+                           handleValidateTransaction(
                               h.prestador_id,
                               h.consumidor,
                               h.description,
@@ -729,7 +725,7 @@ export function Inicio() {
                         }}
                         nome={h.nome}
                         rejeitar={() => {
-                           DeleteTransaction(h.id);
+                           DeleteOrderTransaction(h.id);
                         }}
                         valor={h.valor}
                      />

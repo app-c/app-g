@@ -55,7 +55,7 @@ export function SingIn() {
          }
          return Alert.alert("Login", "usuário nao encontrado");
       });
-   }, [email, errEmail, pass, signIn]);
+   }, [email, pass, signIn]);
 
    return (
       <Container behavior="padding">
@@ -86,6 +86,7 @@ export function SingIn() {
                      keyboardType="email-address"
                      onChangeText={(h) => setEmail(h)}
                      value={email}
+                     selectionColor={theme.colors.text_secundary}
                   />
                   <FormControl.ErrorMessage
                      leftIcon={<WarningOutlineIcon size="xs" />}
@@ -101,6 +102,7 @@ export function SingIn() {
                      color={theme.colors.text_secundary}
                      onChangeText={(h) => setPass(h)}
                      value={pass}
+                     selectionColor={theme.colors.text_secundary}
                   />
                   <FormControl.ErrorMessage
                      leftIcon={<WarningOutlineIcon size="xs" />}

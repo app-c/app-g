@@ -14,10 +14,7 @@ import {
    TouchableOpacity,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
-import { Feather } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import storage from "@react-native-firebase/storage";
-import Firestore from "@react-native-firebase/firestore";
+import { Box, HStack, VStack } from "native-base";
 import { useAuth } from "../../hooks/AuthContext";
 import {
    Avatar,
@@ -33,32 +30,24 @@ import theme from "../../global/styles/theme";
 type Props = DrawerContentComponentProps;
 
 export function DrawerContent({ ...props }: Props) {
-   const { signOut, user, updateUser } = useAuth();
+   const { signOut, user } = useAuth();
 
-   const [image, setImage] = useState(null);
    const [loading, setLoading] = useState(false);
 
    return (
       <Container>
          <Header>
-            <TouchableOpacity>
-               {loading ? (
-                  <ActivityIndicator
-                     size="large"
-                     color={theme.colors.focus_second}
-                  />
-               ) : (
-                  <Avatar source={{ uri: user.avatarUrl }} />
-               )}
-            </TouchableOpacity>
-            <TextContainer>
-               <Text
-                  style={{ color: theme.colors.text, fontSize: RFValue(18) }}
-               >
-                  Olá
-               </Text>
-               <TitleName>{user.nome} </TitleName>
-            </TextContainer>
+            <HStack maxW={200}>
+               <Avatar source={{ uri: user.avatarUrl }} />
+               <VStack ml={5}>
+                  <Text
+                     style={{ color: theme.colors.text, fontSize: RFValue(18) }}
+                  >
+                     Olá
+                  </Text>
+                  <TitleName>{user.nome} </TitleName>
+               </VStack>
+            </HStack>
          </Header>
 
          <ScrollView>

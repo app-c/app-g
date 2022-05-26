@@ -89,6 +89,8 @@ export const AuthProvider: React.FC = ({ children }) => {
                .doc(au.user.uid)
                .get()
                .then(async (profile) => {
+                  console.log(profile);
+
                   const {
                      nome,
                      adm,
@@ -272,9 +274,6 @@ export const AuthProvider: React.FC = ({ children }) => {
             orderB2b,
             orderIndicacao,
             orderTransaction,
-            errEmail,
-            errPass,
-            erroEmail,
          }}
       >
          {children}

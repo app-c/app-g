@@ -1,4 +1,10 @@
-import { Feather, FontAwesome, Zocial } from "@expo/vector-icons";
+import {
+   Feather,
+   FontAwesome,
+   MaterialCommunityIcons,
+   Zocial,
+} from "@expo/vector-icons";
+import { HStack } from "native-base";
 import React from "react";
 import { View } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
@@ -36,7 +42,13 @@ export function FindMembroComponent({
    return (
       <Container>
          <View style={{ flexDirection: "row" }}>
-            <Avatar source={{ uri: avatar }} />
+            <Avatar
+               source={{
+                  uri:
+                     avatar ||
+                     "https://www.seekpng.com/png/detail/73-730482_existing-user-default-avatar.png",
+               }}
+            />
             <View style={{ marginLeft: RFValue(10) }}>
                <TitleName>{name} </TitleName>
                <Title>{workName}</Title>
@@ -54,24 +66,46 @@ export function FindMembroComponent({
 
          <Title>Midias sociais</Title>
 
-         <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+         <HStack space={3} alignSelf="center">
             <Box onPress={whats}>
-               <FontAwesome name="whatsapp" color={theme.colors.primary} />
+               <FontAwesome
+                  name="whatsapp"
+                  color={theme.colors.primary}
+                  size={RFValue(16)}
+               />
                <TitleSocial>Whatts</TitleSocial>
             </Box>
 
             <Box onPress={face}>
-               <Zocial name="facebook" color={theme.colors.primary} />
+               <Zocial
+                  name="facebook"
+                  color={theme.colors.primary}
+                  size={RFValue(16)}
+               />
 
                <TitleSocial>Face </TitleSocial>
             </Box>
 
             <Box onPress={insta}>
-               <Zocial name="instagram" color={theme.colors.primary} />
+               <Zocial
+                  name="instagram"
+                  color={theme.colors.primary}
+                  size={RFValue(16)}
+               />
 
                <TitleSocial>Insta</TitleSocial>
             </Box>
-         </View>
+
+            <Box onPress={insta}>
+               <MaterialCommunityIcons
+                  name="web"
+                  color={theme.colors.primary}
+                  size={RFValue(16)}
+               />
+
+               <TitleSocial style={{ textAlign: "center" }}>WEB</TitleSocial>
+            </Box>
+         </HStack>
       </Container>
    );
 }

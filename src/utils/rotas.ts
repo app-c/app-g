@@ -78,7 +78,7 @@ export const rotas = [
       color: theme.colors.focus_light_3,
       name: "APADRINHAMENTO",
       component: Padrinho,
-      icon: "users",
+      icon: "mortar-board",
    },
    // {
    //    focus: theme.colors.focus,

@@ -140,7 +140,7 @@ export function SingUp() {
                .then((h) => {
                   fire()
                      .collection(colecao.users)
-                     .doc(h.user.id)
+                     .doc(h.user.uid)
                      .set({
                         id: h.user.uid,
                         nome: data.nome,

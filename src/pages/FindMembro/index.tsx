@@ -13,105 +13,113 @@ import { Loading } from "../../components/Loading";
 import { useAuth } from "../../hooks/AuthContext";
 
 export function FindUser() {
-  const { user } = useAuth();
-  const [membro, setMembro] = useState<IUserDto[]>([]);
-  const [value, setValue] = useState("");
-  const [lista, setLista] = useState<IUserDto[]>([]);
-  const [load, setLoad] = useState(true);
+   const { user } = useAuth();
+   const [membro, setMembro] = useState<IUserDto[]>([]);
+   const [value, setValue] = useState("");
+   const [lista, setLista] = useState<IUserDto[]>([]);
+   const [load, setLoad] = useState(true);
 
-  useEffect(() => {
-    const load = fire()
-      .collection(colecao.users)
-      .onSnapshot((h) => {
-        const re = h.docs
-          .map((p) => {
-            return p.data() as IUserDto;
-          })
-          .filter((f) => f.inativo === false)
-          .sort((a, b) => {
-            if (a.nome < b.nome) {
-              return -1;
-            }
-          })
-          .map((h) => {
-            const wa = `https://wa.me/55${h.whats.slice(1, 3)}${h.whats.slice(
-              5,
-              -5
-            )}${h.whats.slice(-4)}`;
-            return {
-              ...h,
-              wa,
-            };
-          });
-        setMembro(re);
-        setLoad(false);
-      });
-    return () => load();
-  }, []);
+   useEffect(() => {
+      const load = fire()
+         .collection(colecao.users)
+         .onSnapshot((h) => {
+            const re = h.docs
+               .map((p) => {
+                  return p.data() as IUserDto;
+               })
+               .filter((f) => f.inativo === false)
+               .sort((a, b) => {
+                  if (a.nome < b.nome) {
+                     return -1;
+                  }
+               })
+               .map((h) => {
+                  const wa = `https://wa.me/55${h.whats.slice(
+                     1,
+                     3
+                  )}${h.whats.slice(5, -5)}${h.whats.slice(-4)}`;
 
-  const handlePress = useCallback(async (url: string) => {
-    await Linkin.openURL(url);
-  }, []);
+                  let ma = "";
+                  if (h.links.maps) {
+                     const [c, l] = h.links.maps.split("https://").map(String);
+                     ma = l;
+                  }
 
-  useEffect(() => {
-    if (value === "") {
-      setLista(membro);
-    } else {
-      setLista(
-        membro
-          .filter((h) => {
-            return h.nome.indexOf(value) > -1;
-          })
-          .sort()
-      );
-    }
-  }, [membro, value]);
+                  return {
+                     ...h,
+                     wa,
+                     map: ma,
+                  };
+               });
+            setMembro(re);
+            setLoad(false);
+         });
+      return () => load();
+   }, []);
 
-  return (
-    <>
-      {load ? (
-        <Loading />
-      ) : (
-        <Container>
-          <HeaderContaponent
-            title="Localizar membros"
-            type="tipo1"
-            onMessage="of"
-          />
+   const handlePress = useCallback(async (url: string) => {
+      await Linkin.openURL(`https://${url}`);
+   }, []);
 
-          <Form>
-            <Box>
-              <InputCasdastro
-                name="find"
-                icon="search"
-                type="custom"
-                options={{ mask: "****************************" }}
-                onChangeText={(text) => setValue(text)}
-                value={value}
-              />
-            </Box>
-          </Form>
+   const handleNavigateToWatts = useCallback(async (url: string) => {
+      await Linkin.openURL(url);
+   }, []);
 
-          <FlatList
-            // contentContainerStyle={{ paddingBottom: 150 }}
-            data={lista}
-            keyExtractor={(h) => h.id}
-            renderItem={({ item: h }) => (
-              <View>
-                <FindMembroComponent
-                  avatar={h.avatarUrl}
-                  name={h.nome}
-                  workName={h.workName}
-                  whats={() => handlePress(h.links[0])}
-                  face={() => handlePress(h.links[1])}
-                  insta={() => handlePress(h.links[2])}
-                  maps={() => handlePress(h.wa)}
-                />
-              </View>
-            )}
-          />
-        </Container>
-      )}
-    </>
-  );
+   useEffect(() => {
+      if (value === "") {
+         setLista(membro);
+      } else {
+         setLista(
+            membro
+               .filter((h) => {
+                  return h.nome.indexOf(value) > -1;
+               })
+               .sort()
+         );
+      }
+   }, [membro, value]);
+
+   return (
+      <>
+         {load ? (
+            <Loading />
+         ) : (
+            <Container>
+               <HeaderContaponent title="Localizar membros" type="tipo1" />
+
+               <Form>
+                  <Box>
+                     <InputCasdastro
+                        name="find"
+                        icon="search"
+                        type="custom"
+                        options={{ mask: "****************************" }}
+                        onChangeText={(text) => setValue(text)}
+                        value={value}
+                     />
+                  </Box>
+               </Form>
+
+               <FlatList
+                  // contentContainerStyle={{ paddingBottom: 150 }}
+                  data={lista}
+                  keyExtractor={(h) => h.id}
+                  renderItem={({ item: h }) => (
+                     <View>
+                        <FindMembroComponent
+                           avatar={h.avatarUrl}
+                           name={h.nome}
+                           workName={h.workName}
+                           whats={() => handleNavigateToWatts(h.wa)}
+                           face={() => handlePress(h.links.face)}
+                           insta={() => handlePress(h.links.insta)}
+                           maps={() => handlePress(h.map)}
+                        />
+                     </View>
+                  )}
+               />
+            </Container>
+         )}
+      </>
+   );
 }
