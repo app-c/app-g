@@ -60,9 +60,6 @@ export const AuthContext = createContext<AuthContexData>({} as AuthContexData);
 export const AuthProvider: React.FC = ({ children }) => {
    const [loading, setLoading] = useState(true);
    const [user, setUser] = useState<IUserDto | null>(null);
-   const [errEmail, setErrEmail] = useState(false);
-   const [errPass, setErrPass] = useState(false);
-   const [erroEmail, setErroEmail] = useState(false);
 
    const [listUser, setListUser] = useState<IUserDto[]>([]);
 
@@ -145,26 +142,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                   );
                });
          });
-      // .catch((err) => {
-      //    const { code } = err;
-      //    console.log(code);
-      //    if (code === "auth/user-not-found") {
-      //       setErrEmail(true);
-      //       return Alert.alert("Login", "email incorreto");
-      //    }
-
-      //    if (code === "auth/wrong-password") {
-      //       setErrEmail(true);
-      //       return Alert.alert("Login", "email incorreto");
-      //    }
-      //    return Alert.alert("Login", "usuário nao encontrado");
-      // });
    }, []);
-
-   useEffect(() => {
-      setErroEmail(errEmail);
-      console.log(errEmail);
-   }, [errEmail]);
 
    //* ORDERS.................................................................
 
