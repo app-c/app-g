@@ -229,18 +229,14 @@ export const AuthProvider: React.FC = ({ children }) => {
          .onSnapshot((h) => {
             const data = h.docs.map((p) => p.data() as IUserDto);
 
-            const us = data.sort((a, b) => {
-               if (a.nome < b.nome) {
-                  return -1;
-               }
-            });
-            setListUser(
-               us.sort((a, b) => {
-                  if (b < a) {
+            const us = data
+               .sort((a, b) => {
+                  if (a.nome < b.nome) {
                      return -1;
                   }
                })
-            );
+               .filter((h) => h.inativo === false);
+            setListUser(us);
          });
       return () => ld();
    }, [user]);

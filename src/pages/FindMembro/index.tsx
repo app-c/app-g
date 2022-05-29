@@ -13,49 +13,34 @@ import { Loading } from "../../components/Loading";
 import { useAuth } from "../../hooks/AuthContext";
 
 export function FindUser() {
-   const { user } = useAuth();
+   const { user, listUser } = useAuth();
    const [membro, setMembro] = useState<IUserDto[]>([]);
    const [value, setValue] = useState("");
    const [lista, setLista] = useState<IUserDto[]>([]);
    const [load, setLoad] = useState(true);
 
    useEffect(() => {
-      const load = fire()
-         .collection(colecao.users)
-         .onSnapshot((h) => {
-            const re = h.docs
-               .map((p) => {
-                  return p.data() as IUserDto;
-               })
-               .filter((f) => f.inativo === false)
-               .sort((a, b) => {
-                  if (a.nome < b.nome) {
-                     return -1;
-                  }
-               })
-               .map((h) => {
-                  const wa = `https://wa.me/55${h.whats.slice(
-                     1,
-                     3
-                  )}${h.whats.slice(5, -5)}${h.whats.slice(-4)}`;
+      const us = listUser.map((h) => {
+         const wa = `https://wa.me/55${h.whats.slice(1, 3)}${h.whats.slice(
+            5,
+            -5
+         )}${h.whats.slice(-4)}`;
 
-                  let ma = "";
-                  if (h.links.maps) {
-                     const [c, l] = h.links.maps.split("https://").map(String);
-                     ma = l;
-                  }
+         let ma = "";
+         if (h.links.maps) {
+            const [c, l] = h.links.maps.split("https://").map(String);
+            ma = l;
+         }
 
-                  return {
-                     ...h,
-                     wa,
-                     map: ma,
-                  };
-               });
-            setMembro(re);
-            setLoad(false);
-         });
-      return () => load();
-   }, []);
+         return {
+            ...h,
+            wa,
+            map: ma,
+         };
+      });
+      setMembro(us);
+      setLoad(false);
+   }, [listUser]);
 
    const handlePress = useCallback(async (url: string) => {
       await Linkin.openURL(`https://${url}`);

@@ -27,7 +27,6 @@ import { MembrosComponents } from "../../components/MembrosCompornents";
 import { useAuth } from "../../hooks/AuthContext";
 import { Box } from "../FindMembro/styles";
 import { InputCasdastro } from "../../components/InputsCadastro";
-import { colecao } from "../../collection";
 import theme from "../../global/styles/theme";
 
 export function Indicacoes() {
@@ -46,13 +45,8 @@ export function Indicacoes() {
 
    useFocusEffect(
       useCallback(() => {
-         const us = listUser.sort((a, b) => {
-            if (a.nome < b.nome) {
-               return -1;
-            }
-         });
-         setUsers(us);
-      }, [])
+         setUsers(listUser);
+      }, [listUser])
    );
 
    const OpenModal = useCallback((user_id: string, workName: string) => {
@@ -97,15 +91,15 @@ export function Indicacoes() {
 
    useEffect(() => {
       if (value === "") {
-         setLista(users);
+         setLista(listUser);
       } else {
          setLista(
-            users.filter((h) => {
+            listUser.filter((h) => {
                return h.nome.indexOf(value) > -1;
             })
          );
       }
-   }, [users, value]);
+   }, [listUser, users, value]);
 
    return (
       <Container>

@@ -57,7 +57,13 @@ export function MembrosComponents({
             }}
          >
             <BoxAvatar>
-               <Avatar source={{ uri: user_avatar }} />
+               <Avatar
+                  source={{
+                     uri:
+                        user_avatar ||
+                        "https://www.seekpng.com/png/detail/73-730482_existing-user-default-avatar.png",
+                  }}
+               />
                <ImageOfice source={{ uri: imageOfice }} />
             </BoxAvatar>
 
