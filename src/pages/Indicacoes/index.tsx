@@ -46,14 +46,12 @@ export function Indicacoes() {
 
    useFocusEffect(
       useCallback(() => {
-         const user = listUser
-            .filter((h) => h.inativo === false)
-            .sort((a, b) => {
-               if (a.nome < b.nome) {
-                  return -1;
-               }
-            });
-         setUsers(user);
+         const us = listUser.sort((a, b) => {
+            if (a.nome < b.nome) {
+               return -1;
+            }
+         });
+         setUsers(us);
       }, [])
    );
 

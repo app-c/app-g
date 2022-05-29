@@ -44,17 +44,11 @@ export function B2B() {
 
    useFocusEffect(
       useCallback(() => {
-         const us = listUser
-            .sort((a, b) => {
-               if (a.nome < b.nome) {
-                  return -1;
-               }
-            })
-            .sort((a, b) => {
-               if (a.nome < b.nome) {
-                  return -1;
-               }
-            });
+         const us = listUser.sort((a, b) => {
+            if (a.nome < b.nome) {
+               return -1;
+            }
+         });
          setMembros(us);
          setLoad(false);
       }, [])

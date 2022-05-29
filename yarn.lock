@@ -6076,7 +6076,7 @@ expo-updates-interface@~0.6.0:
   resolved "https://registry.yarnpkg.com/expo-updates-interface/-/expo-updates-interface-0.6.0.tgz#cef5250106e59572afdfcf245c534754c8c844ba"
   integrity sha512-oQcGTsE8mSkSxENPlWjZPGoJpt3RFDNPuO5d8shBDxBb4ZNH/W2ojavSFQMaLbNMoS0bYQQhzbRNEIBd306QMg==
 
-expo@~45.0.0:
+expo@^45.0.4:
   version "45.0.4"
   resolved "https://registry.yarnpkg.com/expo/-/expo-45.0.4.tgz#a34d250605d5603e3cea4acf169aedd288df477b"
   integrity sha512-S/6rwmgG+1cyHP1hCmylk9FLnavUWd/haWgVc8sUNiavaMBu/vCjeLUESFVJdYRKKN9i+avSzHdAVdKytNYo6A==
@@ -11657,6 +11657,11 @@ unset-value@^1.0.0:
   dependencies:
     has-value "^0.3.1"
     isobject "^3.0.0"
+
+updates@^13.0.5:
+  version "13.0.5"
+  resolved "https://registry.yarnpkg.com/updates/-/updates-13.0.5.tgz#d908067e8c27173973ad89c9f6d74fa92de3b2e2"
+  integrity sha512-ut7RIiH5Qys7jan4cS9i1Lqk6AAKGmVy1q0udDNJ4YXhvVoUdwQTAk5I9/wkSH6nHQtqhaqytCcZvS6hEJs8xg==
 
 uri-js@^4.2.2:
   version "4.4.1"
