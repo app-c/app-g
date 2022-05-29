@@ -68,7 +68,7 @@ export function SingIn() {
                top: 30,
             }}
          >
-            version: 2.1.0
+            version: 2.1.3
          </Text>
          <BoxLogo>
             <Logo source={logo} />
