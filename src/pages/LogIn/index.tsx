@@ -12,11 +12,6 @@ import logo from "../../assets/logo.png";
 import { useAuth } from "../../hooks/AuthContext";
 import theme from "../../global/styles/theme";
 
-interface FormData {
-   membro: string;
-   senha: string;
-}
-
 export function SingIn() {
    const { signIn } = useAuth();
    const formRef = useRef<FormHandles>(null);
