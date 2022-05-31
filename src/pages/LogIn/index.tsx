@@ -3,8 +3,20 @@ import React, { useCallback, useRef, useState } from "react";
 
 import { Form } from "@unform/mobile";
 import { FormHandles } from "@unform/core";
-import { Alert, Text, View } from "react-native";
-import { FormControl, WarningOutlineIcon, Input } from "native-base";
+import { Alert, TouchableOpacity, View } from "react-native";
+import {
+   FormControl,
+   WarningOutlineIcon,
+   Input,
+   Text,
+   Box,
+   Center,
+   Modal,
+   Button as ButtonBase,
+   VStack,
+} from "native-base";
+import auth from "@react-native-firebase/auth";
+import { Modalize } from "react-native-modalize";
 import { BoxInput, BoxLogo, Container, Logo, Title } from "./styles";
 // import { Input } from "../../components/Inputs";
 import { Button } from "../../components/Button";
@@ -15,6 +27,8 @@ import theme from "../../global/styles/theme";
 export function SingIn() {
    const { signIn } = useAuth();
    const formRef = useRef<FormHandles>(null);
+   const modalRef = useRef<Modalize>(null);
+   const [showModal, setShowModal] = useState(false);
 
    const [email, setEmail] = useState("");
    const [pass, setPass] = useState("");
@@ -52,8 +66,46 @@ export function SingIn() {
       });
    }, [email, pass, signIn]);
 
+   const handleForgotPassword = useCallback(() => {
+      auth()
+         .sendPasswordResetEmail(email)
+         .then((h) => {
+            Alert.alert("Um link foi enviado para seu email");
+         });
+   }, [email]);
+
    return (
       <Container behavior="padding">
+         <Center>
+            <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+               <Box
+                  w="90%"
+                  bg={theme.colors.text_secundary}
+                  padding="10"
+                  borderRadius={8}
+               >
+                  <VStack>
+                     <FormControl>
+                        <FormControl.Label>DIGITE SEU E-MAIL</FormControl.Label>
+                        <Input
+                           onChangeText={(h) => setEmail(h)}
+                           value={email}
+                           autoCapitalize="none"
+                           keyboardType="email-address"
+                        />
+                     </FormControl>
+                     <ButtonBase
+                        onPress={handleForgotPassword}
+                        fontFamily={theme.fonts.blac}
+                        bg={theme.colors.focus}
+                        mt="5"
+                     >
+                        ENVIAR
+                     </ButtonBase>
+                  </VStack>
+               </Box>
+            </Modal>
+         </Center>
          <Text
             style={{
                alignSelf: "flex-end",
@@ -105,31 +157,19 @@ export function SingIn() {
                      Try different from previous passwords.
                   </FormControl.ErrorMessage>
                </FormControl>
-               {/* <View>
-                  <Title>E-mail</Title>
-                  <Input
-                     type="custom"
-                     options={{
-                        mask: "***************************",
-                     }}
-                     autoCapitalize="none"
-                     name="membro"
-                     icon="user"
-                  />
-               </View>
 
-               <View>
-                  <Title>Senha</Title>
-                  <Input
-                     type="custom"
-                     options={{
-                        mask: "*************************",
-                     }}
-                     name="senha"
-                     icon="lock"
-                  />
-               </View>
-               */}
+               <Box mt={5}>
+                  <TouchableOpacity onPress={() => setShowModal(true)}>
+                     <Text
+                        fontSize="12"
+                        fontFamily={theme.fonts.blac}
+                        color={theme.colors.text_secundary}
+                     >
+                        ESQUECI MINHA SENHA
+                     </Text>
+                  </TouchableOpacity>
+               </Box>
+
                <View style={{ marginTop: 32 }}>
                   <Button
                      pres={() => formRef.current?.submitForm()}
