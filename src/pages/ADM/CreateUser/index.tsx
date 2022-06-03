@@ -155,7 +155,7 @@ export function SingUp() {
                         padrinhQuantity: 0,
                         avatarUrl: null,
                         logoUrl: null,
-                        links: [],
+                        links: {},
                         presenca: [],
                         indicacao: 0,
                         inativo: false,
