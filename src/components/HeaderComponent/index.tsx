@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable camelcase */
-import React, { useCallback, useState } from "react";
-import { AntDesign, Feather } from "@expo/vector-icons";
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Image, Modal, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useState } from 'react';
+import { AntDesign, Feather } from '@expo/vector-icons';
+import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Image, Modal, TouchableOpacity, View } from 'react-native';
 import {
    BoxMail,
    Circle,
@@ -12,15 +12,15 @@ import {
    Header,
    TextCircli,
    TitleHeader,
-} from "./styles";
-import { useAuth } from "../../hooks/AuthContext";
-import theme from "../../global/styles/theme";
-import logo1 from "../../assets/logo1.png";
-import logo from "../../assets/logo.png";
+} from './styles';
+import { useAuth } from '../../hooks/AuthContext';
+import theme from '../../global/styles/theme';
+import logo1 from '../../assets/logo1.png';
+import logo from '../../assets/logo.png';
 
 interface Props {
    title: string;
-   type: "tipo1" | "tipo2" | "tipo3";
+   type: 'tipo1' | 'tipo2' | 'tipo3';
 }
 
 interface Res {
@@ -36,8 +36,8 @@ export function HeaderContaponent({ title, type }: Props) {
    return (
       <Container>
          <Header type={type}>
-            <TouchableOpacity onPress={() => navigate("INÍCIO")}>
-               {type === "tipo1" && (
+            <TouchableOpacity onPress={() => navigate('INÍCIO')}>
+               {type === 'tipo1' && (
                   <Feather
                      name="arrow-left"
                      size={35}
@@ -45,7 +45,7 @@ export function HeaderContaponent({ title, type }: Props) {
                   />
                )}
 
-               {type === "tipo2" && (
+               {type === 'tipo2' && (
                   <Feather
                      name="arrow-left"
                      size={35}
@@ -56,7 +56,7 @@ export function HeaderContaponent({ title, type }: Props) {
 
             <TitleHeader type={type}>{title} </TitleHeader>
 
-            {type === "tipo1" && (
+            {type === 'tipo1' && (
                <Image
                   style={{
                      width: RFPercentage(6),

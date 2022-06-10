@@ -1,129 +1,129 @@
-import { Valide } from "../pages/ValidePresenca";
-import { Profile } from "../pages/Profile";
-import { Consumo } from "../pages/Consumo";
-import { Indicacoes } from "../pages/Indicacoes";
-import { FindUser } from "../pages/FindMembro";
-import { Inativo } from "../pages/ADM/Inativo";
-import { Ranking } from "../pages/ADM/Classificacao";
-import { SingUp } from "../pages/ADM/CreateUser";
-import { ListPresenca } from "../pages/ADM/ListaPresenca";
-import { UpdateSenhaUser } from "../pages/ADM/UpdateSenhaUser";
-import { DeletUser } from "../pages/ADM/DeleteUser";
-import { TabBarApp } from "../routes/TabBarApp";
-import { StacKMembros } from "../routes/StackMembros";
-import { StackB2b } from "../routes/StackB2b";
-import theme from "../global/styles/theme";
-import Push from "../components/push";
-import { Padrinho } from "../pages/Padrinho";
+import { Valide } from '../pages/ValidePresenca';
+import { Profile } from '../pages/Profile';
+import { Consumo } from '../pages/Consumo';
+import { Indicacoes } from '../pages/Indicacoes';
+import { FindUser } from '../pages/FindMembro';
+import { Inativo } from '../pages/ADM/Inativo';
+import { Ranking } from '../pages/ADM/Classificacao';
+import { SingUp } from '../pages/ADM/CreateUser';
+import { ListPresenca } from '../pages/ADM/ListaPresenca';
+import { UpdateSenhaUser } from '../pages/ADM/UpdateSenhaUser';
+import { DeletUser } from '../pages/ADM/DeleteUser';
+import { TabBarApp } from '../routes/TabBarApp';
+import { StacKMembros } from '../routes/StackMembros';
+import { StackB2b } from '../routes/StackB2b';
+import theme from '../global/styles/theme';
+import { Padrinho } from '../pages/Padrinho';
+import Push from '../components/push';
 
 export const rotas = [
    {
       focus: theme.colors.focus_second,
       color: theme.colors.focus_second_3,
-      name: "POSTS",
+      name: 'POSTS',
       component: TabBarApp,
-      icon: "camera-retro",
+      icon: 'camera-retro',
    },
    {
       focus: theme.colors.focus_second,
       color: theme.colors.focus_second_3,
-      name: "PERFIL",
+      name: 'PERFIL',
       component: Profile,
-      icon: "user-circle-o",
+      icon: 'user-circle-o',
    },
    {
       focus: theme.colors.focus_second,
       color: theme.colors.focus_second_3,
-      name: "LOCALIZE OS MEMBROS",
+      name: 'LOCALIZE OS MEMBROS',
       component: FindUser,
-      icon: "map-marker",
+      icon: 'map-marker',
    },
    {
       focus: theme.colors.focus_second,
       color: theme.colors.focus_second_3,
-      name: "EXTRATO",
+      name: 'EXTRATO',
       component: Consumo,
-      icon: "line-chart",
+      icon: 'line-chart',
    },
    {
       focus: theme.colors.focus,
       color: theme.colors.focus_light_3,
-      name: "VALIDE SUA PRESENÇA",
+      name: 'VALIDE SUA PRESENÇA',
       component: Valide,
-      icon: "hand-peace-o",
+      icon: 'hand-peace-o',
    },
    {
       focus: theme.colors.focus,
       color: theme.colors.focus_light_3,
-      name: "NEGOCIAR",
+      name: 'NEGOCIAR',
       component: StacKMembros,
-      icon: "handshake-o",
+      icon: 'handshake-o',
    },
    {
       focus: theme.colors.focus,
       color: theme.colors.focus_light_3,
-      name: "INDICAÇÕES",
+      name: 'INDICAÇÕES',
       component: Indicacoes,
-      icon: "exchange",
+      icon: 'exchange',
    },
    {
       focus: theme.colors.focus,
       color: theme.colors.focus_light_3,
-      name: "B2B",
+      name: 'B2B',
       component: StackB2b,
-      icon: "users",
+      icon: 'users',
    },
    {
       focus: theme.colors.focus,
       color: theme.colors.focus_light_3,
-      name: "APADRINHAMENTO",
+      name: 'APADRINHAMENTO',
       component: Padrinho,
-      icon: "mortar-board",
+      icon: 'mortar-board',
    },
-   // {
-   //    focus: theme.colors.focus,
-   //    color: theme.colors.focus_light_3,
-   //    name: "push",
-   //    component: Push,
-   //    icon: "users",
-   // },
+   {
+      focus: theme.colors.focus,
+      color: theme.colors.focus_light_3,
+      name: 'push',
+      component: Push,
+      icon: 'users',
+   },
 ];
 
 export const rotasAdm = [
    {
       color: theme.colors.secundary,
-      name: "RANKING",
+      name: 'RANKING',
       component: Ranking,
-      icon: "",
+      icon: '',
    },
    {
       color: theme.colors.secundary,
-      name: "CADASTRAR MEMBRO",
+      name: 'CADASTRAR MEMBRO',
       component: SingUp,
-      icon: "",
+      icon: '',
    },
    {
       color: theme.colors.secundary,
-      name: "CONFIRMAR PRESENÇA DOS MEMBROS",
+      name: 'CONFIRMAR PRESENÇA DOS MEMBROS',
       component: ListPresenca,
-      icon: "",
+      icon: '',
    },
    {
       color: theme.colors.secundary,
-      name: "ALTERAR SENHA DE UM MEMBRO",
+      name: 'ALTERAR SENHA DE UM MEMBRO',
       component: UpdateSenhaUser,
-      icon: "",
+      icon: '',
    },
    {
       color: theme.colors.secundary,
-      name: "EXCLUIR UM MEMBRO",
+      name: 'EXCLUIR UM MEMBRO',
       component: DeletUser,
-      icon: "",
+      icon: '',
    },
    {
       color: theme.colors.secundary,
-      name: "INATIVAR UM MEMBRO",
+      name: 'INATIVAR UM MEMBRO',
       component: Inativo,
-      icon: "",
+      icon: '',
    },
 ];

@@ -1,28 +1,28 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/prop-types */
 /* eslint-disable camelcase */
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
    createContext,
    useCallback,
    useContext,
    useEffect,
    useState,
-} from "react";
-import { Alert } from "react-native";
-import Auth from "@react-native-firebase/auth";
-import Firestore from "@react-native-firebase/firestore";
+} from 'react';
+import { Alert } from 'react-native';
+import Auth from '@react-native-firebase/auth';
+import Firestore from '@react-native-firebase/firestore';
 
-import { format } from "date-fns";
-import { boolean } from "yup";
+import { format } from 'date-fns';
+import { boolean } from 'yup';
 import {
    IOrderB2b,
    IOrderIndication,
    IOrderTransaction,
    ITransaction,
    IUserDto,
-} from "../dtos";
-import { colecao } from "../collection";
+} from '../dtos';
+import { colecao } from '../collection';
 
 export interface User {
    id: string;
@@ -53,7 +53,7 @@ interface AuthContexData {
    listUser: IUserDto[] | null;
 }
 
-const User_Collection = "@Geb:user";
+const User_Collection = '@Geb:user';
 
 export const AuthContext = createContext<AuthContexData>({} as AuthContexData);
 
@@ -83,12 +83,12 @@ export const AuthProvider: React.FC = ({ children }) => {
    const signIn = useCallback(async ({ email, senha }) => {
       await Auth()
          .signInWithEmailAndPassword(email, senha)
-         .then((au) => {
+         .then(au => {
             Firestore()
                .collection(colecao.users)
                .doc(au.user.uid)
                .get()
-               .then(async (profile) => {
+               .then(async profile => {
                   const {
                      nome,
                      adm,
@@ -105,6 +105,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                      indicacao,
                      presenca,
                      inativo,
+                     token,
                   } = profile.data() as IUserDto;
 
                   if (profile.exists) {
@@ -126,19 +127,20 @@ export const AuthProvider: React.FC = ({ children }) => {
                         indicacao,
                         presenca,
                         inativo,
+                        token,
                      };
                      await AsyncStorage.setItem(
                         User_Collection,
-                        JSON.stringify(userData)
+                        JSON.stringify(userData),
                      );
                      setUser(userData);
                   }
                })
-               .catch((err) => {
+               .catch(err => {
                   const { code } = err;
                   Alert.alert(
-                     "Login",
-                     "Não foi possível carregar os dados do usuário"
+                     'Login',
+                     'Não foi possível carregar os dados do usuário',
                   );
                });
          });
@@ -149,7 +151,7 @@ export const AuthProvider: React.FC = ({ children }) => {
    const orderB2b = useCallback(
       async ({ prestador_id, user_id, description, nome }) => {
          if (!description) {
-            Alert.alert("Transação", "informe uma descrição ");
+            Alert.alert('Transação', 'informe uma descrição ');
             return;
          }
 
@@ -162,9 +164,9 @@ export const AuthProvider: React.FC = ({ children }) => {
                nome,
                data: new Date(Date.now()),
             })
-            .catch((err) => console.log(err));
+            .catch(err => console.log(err));
       },
-      []
+      [],
    );
 
    const orderTransaction = useCallback(
@@ -178,7 +180,7 @@ export const AuthProvider: React.FC = ({ children }) => {
             data,
          });
       },
-      []
+      [],
    );
 
    const orderIndicacao = useCallback(
@@ -201,10 +203,10 @@ export const AuthProvider: React.FC = ({ children }) => {
                nomeCliente,
                telefoneCliente,
                descricao,
-               createdAt: format(new Date(Date.now()), "dd-MM-yy-HH-mm"),
+               createdAt: format(new Date(Date.now()), 'dd-MM-yy-HH-mm'),
             });
       },
-      []
+      [],
    );
 
    //* .......................................................................
@@ -215,7 +217,7 @@ export const AuthProvider: React.FC = ({ children }) => {
             .collection(colecao.transaction)
             .add({ prestador_id, descricao, type, valor, createdAt });
       },
-      []
+      [],
    );
 
    useEffect(() => {
@@ -224,8 +226,8 @@ export const AuthProvider: React.FC = ({ children }) => {
       }
       const ld = Firestore()
          .collection(colecao.users)
-         .onSnapshot((h) => {
-            const data = h.docs.map((p) => p.data() as IUserDto);
+         .onSnapshot(h => {
+            const data = h.docs.map(p => p.data() as IUserDto);
 
             const us = data
                .sort((a, b) => {
@@ -233,7 +235,7 @@ export const AuthProvider: React.FC = ({ children }) => {
                      return -1;
                   }
                })
-               .filter((h) => h.inativo === false);
+               .filter(h => h.inativo === false);
             setListUser(us);
          });
       return () => ld();
@@ -279,7 +281,7 @@ export function useAuth(): AuthContexData {
    const context = useContext(AuthContext);
 
    if (!context) {
-      throw new Error("useAuth must be used with ..");
+      throw new Error('useAuth must be used with ..');
    }
 
    return context;

@@ -28,13 +28,14 @@ export interface IUserDto {
    avatarUrl: string;
    logoUrl: string;
    inativo: boolean;
+   token: string;
 }
 
 export interface ITransaction {
    prestador_id?: string;
    consumidor?: string;
    descricao: string;
-   type: "entrada" | "saida";
+   type: 'entrada' | 'saida';
    valor;
    createdAt: string;
 }

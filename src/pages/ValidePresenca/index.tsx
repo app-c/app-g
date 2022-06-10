@@ -1,20 +1,20 @@
 /* eslint-disable camelcase */
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { add, format } from "date-fns";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert } from "react-native";
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { add, format } from 'date-fns';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Alert } from 'react-native';
 
-import Firestore from "@react-native-firebase/firestore";
-import { HeaderContaponent } from "../../components/HeaderComponent";
-import { Loading } from "../../components/Loading";
-import { useAuth } from "../../hooks/AuthContext";
+import Firestore from '@react-native-firebase/firestore';
+import { HeaderContaponent } from '../../components/HeaderComponent';
+import { Loading } from '../../components/Loading';
+import { useAuth } from '../../hooks/AuthContext';
 import {
    Box,
    ButtonValidar,
    Container,
    TextButtonValidar,
    Title,
-} from "./styles";
+} from './styles';
 
 type Props = {
    user_id: string;
@@ -28,7 +28,7 @@ export function Valide() {
    const { user } = useAuth();
    const { navigate } = useNavigation();
    const [data, setData] = useState(
-      format(new Date(Date.now()), "dd/MM/yyyy - HH:mm")
+      format(new Date(Date.now()), 'dd/MM/yyyy - HH:mm'),
    );
    const [load, setLoad] = useState(false);
    const [presenca, setPresenca] = useState<Props[]>([]);
@@ -36,12 +36,12 @@ export function Valide() {
    const hanldeValidar = useCallback(async () => {
       if (presenca) {
          return Alert.alert(
-            "Vocẽ não pode marcar presença mais de uma vez no mesmo horário"
+            'Vocẽ não pode marcar presença mais de uma vez no mesmo horário',
          );
       }
 
       Firestore()
-         .collection("presença")
+         .collection('presença')
          .add({
             user_id: user.id,
             presenca: false,
@@ -50,18 +50,18 @@ export function Valide() {
             avatar: user.avatarUrl,
          })
          .finally(() => setLoad(false))
-         .catch((err) => console.log(err));
+         .catch(err => console.log(err));
       setLoad(false);
-      navigate("INÍCIO");
+      navigate('INÍCIO');
    }, [navigate, presenca, user.avatarUrl, user.id, user.nome]);
 
    useEffect(() => {
       const load = Firestore()
-         .collection("presença")
-         .onSnapshot((h) => {
+         .collection('presença')
+         .onSnapshot(h => {
             const response = h.docs
-               .map((h) => h.data() as Props)
-               .find((h) => {
+               .map(h => h.data() as Props)
+               .find(h => {
                   const hora = new Date(Date.now()).getHours();
                   const horaPresença = new Date(h.createdAt).getHours();
 

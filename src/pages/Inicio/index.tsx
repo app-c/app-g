@@ -3,55 +3,38 @@
 /* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
-import {
-   AntDesign,
-   Feather,
-   FontAwesome,
-   FontAwesome5,
-   MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
+import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Platform, Text, TouchableOpacity, View } from 'react-native';
 import {
    DrawerActions,
    useFocusEffect,
    useNavigation,
-} from "@react-navigation/native";
+} from '@react-navigation/native';
 
-import { Modalize } from "react-native-modalize";
-import { format } from "date-fns";
-import fire from "@react-native-firebase/firestore";
-import { acc } from "react-native-reanimated";
-import theme from "../../global/styles/theme";
-import { useAuth } from "../../hooks/AuthContext";
+import { Modalize } from 'react-native-modalize';
+import { format } from 'date-fns';
+import fire from '@react-native-firebase/firestore';
+import * as Notifications from 'expo-notifications';
+import theme from '../../global/styles/theme';
+import { useAuth } from '../../hooks/AuthContext';
 import {
    Avatar,
-   Box,
    BoxIco,
    BoxPrice,
    ComprasText,
    Container,
-   FontAwes,
-   IconAnt,
-   IconFont,
-   IconFoundation,
-   IconIoncic,
-   IConSimple,
    Line,
-   Scroll,
-   Title,
    TitleName,
    TitleP,
    TitlePrice,
-} from "./styles";
-// import { registerForPushNotificationsAsync } from "../../components/Notification/Notification";
-import handImage from "../../assets/hand.png";
-import { ModalOrderIndication } from "../../components/ModalOrderIndication";
-import { IUserDto } from "../../dtos";
-import { ModalB2b } from "../../components/ModalB2b";
-import { MessageComponent } from "../../components/MessageComponent";
-import { colecao } from "../../collection";
-import { Classificacao } from "../Classificacao";
+} from './styles';
+import { ModalOrderIndication } from '../../components/ModalOrderIndication';
+import { IUserDto } from '../../dtos';
+import { ModalB2b } from '../../components/ModalB2b';
+import { MessageComponent } from '../../components/MessageComponent';
+import { colecao } from '../../collection';
+import { Classificacao } from '../Classificacao';
 
 interface IOrder_Indication {
    id: string;
@@ -114,28 +97,63 @@ export function Inicio() {
 
    const [sucess, setSucess] = useState<Propssuce[]>([]);
    const [price, setPrice] = useState<PriceProps>({});
-   const [montante, setMontante] = useState("");
-   const [montanteP, setMontanteP] = useState("");
+   const [montante, setMontante] = useState('');
+   const [montanteP, setMontanteP] = useState('');
    const [orderB2b, setOrderB2b] = useState<PropsB2b[]>([]);
    const [orderTransaction, setOrderTransaction] = useState<ProsTransaction[]>(
-      []
+      [],
    );
    const [orderIndication, setOrderIndication] = useState<IOrder_Indication[]>(
-      []
+      [],
    );
+
+   // * token ................................................................
+   const token = React.useCallback(async () => {
+      const { status: existingStatus } =
+         await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+         const { status } = await Notifications.requestPermissionsAsync();
+         finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+         Alert.alert('Failed to get push token for push notification!');
+         return;
+      }
+      const token = (
+         await Notifications.getExpoPushTokenAsync({
+            experienceId: '@app-c/appg',
+         })
+      ).data;
+
+      console.log(token);
+
+      fire().collection('users').doc(user.id).update({
+         token,
+      });
+
+      if (Platform.OS === 'android') {
+         Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+         });
+      }
+   }, [user.id]);
 
    useEffect(() => {
       const load = fire()
          .collection(colecao.orderIndication)
-         .onSnapshot((h) => {
-            const order = h.docs.map((p) => {
+         .onSnapshot(h => {
+            const order = h.docs.map(p => {
                return {
                   id: p.id,
                   ...p.data(),
                } as IOrder_Indication;
             });
 
-            setOrderIndication(order.filter((h) => h.userId === user.id));
+            setOrderIndication(order.filter(h => h.userId === user.id));
          });
 
       return () => load();
@@ -143,15 +161,15 @@ export function Inicio() {
 
    useEffect(() => {
       const load = fire()
-         .collection("sucess_indication")
-         .onSnapshot((suce) => {
-            const res = suce.docs.map((p) => {
+         .collection('sucess_indication')
+         .onSnapshot(suce => {
+            const res = suce.docs.map(p => {
                return {
                   id: p.id,
                   ...p.data(),
                } as Propssuce;
             });
-            const fil = res.filter((h) => h.quemIndicou === user.id);
+            const fil = res.filter(h => h.quemIndicou === user.id);
             setSucess(fil);
          });
 
@@ -161,14 +179,14 @@ export function Inicio() {
    useEffect(() => {
       const load = fire()
          .collection(colecao.orderB2b)
-         .onSnapshot((h) => {
-            const res = h.docs.map((p) => {
+         .onSnapshot(h => {
+            const res = h.docs.map(p => {
                return {
                   id: p.id,
                   ...p.data(),
                } as PropsB2b;
             });
-            setOrderB2b(res.filter((h) => h.prestador_id === user.id));
+            setOrderB2b(res.filter(h => h.prestador_id === user.id));
          });
 
       return () => load();
@@ -177,15 +195,15 @@ export function Inicio() {
    useEffect(() => {
       const load = fire()
          .collection(colecao.orderTransaction)
-         .onSnapshot((h) => {
+         .onSnapshot(h => {
             const res = h.docs
-               .map((p) => {
+               .map(p => {
                   return {
                      id: p.id,
                      ...p.data(),
                   } as ProsTransaction;
                })
-               .filter((h) => h.prestador_id === user.id);
+               .filter(h => h.prestador_id === user.id);
 
             setOrderTransaction(res);
          });
@@ -203,9 +221,9 @@ export function Inicio() {
 
    const HandShak = useCallback(
       (quemIndicou: string, id: string) => {
-         navigate.navigate("indication", { quemIndicou, id });
+         navigate.navigate('indication', { quemIndicou, id });
       },
-      [navigate]
+      [navigate],
    );
 
    const HandFailIndication = useCallback(
@@ -213,9 +231,9 @@ export function Inicio() {
          fire().collection(colecao.orderIndication).doc(id).delete();
 
          fire()
-            .collection("sucess_indication")
+            .collection('sucess_indication')
             .add({
-               createdAt: format(new Date(Date.now()), "dd/MM - HH:mm"),
+               createdAt: format(new Date(Date.now()), 'dd/MM - HH:mm'),
                nome: user.nome,
                quemIndicou,
             });
@@ -224,7 +242,7 @@ export function Inicio() {
             .collection(colecao.users)
             .doc(quemIndicou)
             .get()
-            .then((h) => {
+            .then(h => {
                let { indicacao } = h.data() as IUserDto;
                fire()
                   .collection(colecao.users)
@@ -234,10 +252,13 @@ export function Inicio() {
                   });
             })
             .catch(() =>
-               Alert.alert("Algo deu errado", "dados do usuário nao recuperado")
+               Alert.alert(
+                  'Algo deu errado',
+                  'dados do usuário nao recuperado',
+               ),
             );
       },
-      [user.nome]
+      [user.nome],
    );
 
    const handleFailB2b = useCallback((id: string) => {
@@ -247,9 +268,9 @@ export function Inicio() {
 
    const handleSucessB2b = useCallback(
       (id: string, user_id: string, prestador_id: string) => {
-         const data = format(new Date(Date.now()), "dd-MM-yy-HH-mm");
+         const data = format(new Date(Date.now()), 'dd-MM-yy-HH-mm');
          fire()
-            .collection("b2b")
+            .collection('b2b')
             .add({
                id,
                user_id,
@@ -258,15 +279,15 @@ export function Inicio() {
             })
             .then(() => {
                fire().collection(colecao.orderB2b).doc(id).delete();
-               Alert.alert("B2B realizado com sucesso!");
+               Alert.alert('B2B realizado com sucesso!');
                modalB2b.current.close();
             });
       },
-      []
+      [],
    );
 
    const handleSucess = useCallback(async (id: string) => {
-      fire().collection("sucess_indication").doc(id).delete();
+      fire().collection('sucess_indication').doc(id).delete();
    }, []);
 
    // todo TRANSAÇÃO.......................................................................
@@ -276,15 +297,15 @@ export function Inicio() {
          consumidor: string,
          descricao: string,
          id: string,
-         valor: string
+         valor: string,
       ) => {
          fire()
             .collection(colecao.transaction)
             .add({
                prestador_id,
                descricao,
-               type: "entrada",
-               createdAt: format(new Date(Date.now()), "dd-MM-yyy-HH-mm"),
+               type: 'entrada',
+               createdAt: format(new Date(Date.now()), 'dd-MM-yyy-HH-mm'),
                valor,
             });
 
@@ -293,19 +314,19 @@ export function Inicio() {
             .add({
                consumidor,
                descricao,
-               type: "saida",
-               createdAt: format(new Date(Date.now()), "dd-MM-yyy-HH-mm"),
+               type: 'saida',
+               createdAt: format(new Date(Date.now()), 'dd-MM-yyy-HH-mm'),
                valor,
             });
 
          fire()
-            .collection("order_transaction")
+            .collection('order_transaction')
             .doc(id)
             .delete()
-            .then(() => Alert.alert("Transação confirmada"))
-            .catch((err) => console.log(err));
+            .then(() => Alert.alert('Transação confirmada'))
+            .catch(err => console.log(err));
       },
-      []
+      [],
    );
 
    const DeleteOrderTransaction = useCallback(async (id: string) => {
@@ -313,18 +334,18 @@ export function Inicio() {
          .collection(colecao.orderTransaction)
          .doc(id)
          .delete()
-         .then(() => Alert.alert("Transação deletada"));
+         .then(() => Alert.alert('Transação deletada'));
    }, []);
    // todo .......................................................................
 
    //* *....................................................................... */
    const load = useCallback(() => {
       fire()
-         .collection("transaction")
-         .onSnapshot((h) => {
+         .collection('transaction')
+         .onSnapshot(h => {
             const rs = h.docs
-               .map((p) => p.data())
-               .filter((l) => l.prestador_id === user.id);
+               .map(p => p.data())
+               .filter(l => l.prestador_id === user.id);
 
             const somoa = rs.reduce((ac, it) => {
                return ac + it.valor;
@@ -333,29 +354,29 @@ export function Inicio() {
          });
 
       fire()
-         .collection("b2b")
-         .onSnapshot((b2b) => {
+         .collection('b2b')
+         .onSnapshot(b2b => {
             const res = b2b.docs
-               .map((h) => h.data())
-               .filter((h) => h.user_id === user.id);
+               .map(h => h.data())
+               .filter(h => h.user_id === user.id);
             setPtB2b(res.length * 20);
          });
 
       fire()
          .collection(colecao.presenca)
-         .onSnapshot((b2b) => {
+         .onSnapshot(b2b => {
             const res = b2b.docs
-               .map((h) => h.data())
-               .filter((h) => h.user_id === user.id && h.presenca === true);
+               .map(h => h.data())
+               .filter(h => h.user_id === user.id && h.presenca === true);
             setPtPrs(res.length * 10);
          });
 
       fire()
          .collection(colecao.users)
-         .onSnapshot((b2b) => {
+         .onSnapshot(b2b => {
             const res = b2b.docs
-               .map((h) => h.data())
-               .filter((h) => h.id === user.id)
+               .map(h => h.data())
+               .filter(h => h.id === user.id)
                .reduce((ac, it) => {
                   return ac + it.indicacao;
                }, 0);
@@ -364,10 +385,10 @@ export function Inicio() {
 
       fire()
          .collection(colecao.users)
-         .onSnapshot((b2b) => {
+         .onSnapshot(b2b => {
             const res = b2b.docs
-               .map((h) => h.data())
-               .filter((h) => h.id === user.id)
+               .map(h => h.data())
+               .filter(h => h.id === user.id)
                .reduce((ac, it) => {
                   return ac + it.padrinhQuantity;
                }, 0);
@@ -376,11 +397,11 @@ export function Inicio() {
 
       fire()
          .collection(colecao.transaction)
-         .onSnapshot((b2b) => {
-            const res = b2b.docs.map((h) => h.data());
+         .onSnapshot(b2b => {
+            const res = b2b.docs.map(h => h.data());
 
-            const filCompras = res.filter((h) => h.prestador_id === user.id);
-            const filVendas = res.filter((h) => h.consumidor === user.id);
+            const filCompras = res.filter(h => h.prestador_id === user.id);
+            const filVendas = res.filter(h => h.consumidor === user.id);
 
             setPtCom(filCompras.length * 10);
             setPtVen(filVendas.length * 10);
@@ -391,22 +412,22 @@ export function Inicio() {
    useEffect(() => {
       const load = fire()
          .collection(colecao.transaction)
-         .onSnapshot((h) => {
-            const res = h.docs.map((p) => p.data());
-            const data = res.filter((h) => {
-               if (h.prestador_id === user.id && h.type === "entrada") {
+         .onSnapshot(h => {
+            const res = h.docs.map(p => p.data());
+            const data = res.filter(h => {
+               if (h.prestador_id === user.id && h.type === 'entrada') {
                   return h;
                }
             });
 
             const MontatePass = res
-               .filter((h) => {
-                  const data = h.createdAt ? h.createdAt : "00-00-00-00-00";
+               .filter(h => {
+                  const data = h.createdAt ? h.createdAt : '00-00-00-00-00';
                   const [dia, mes, ano, hora, min] = data
-                     .split("-")
+                     .split('-')
                      .map(Number);
                   const DateN = new Date(Date.now()).getFullYear() - 1;
-                  if (h.type === "entrada" && ano === DateN) {
+                  if (h.type === 'entrada' && ano === DateN) {
                      return h;
                   }
                })
@@ -415,14 +436,14 @@ export function Inicio() {
                }, 0);
 
             const MontateAtual = res
-               .filter((h) => {
-                  const data = h.createdAt ? h.createdAt : "00-00-00-00-00";
+               .filter(h => {
+                  const data = h.createdAt ? h.createdAt : '00-00-00-00-00';
 
                   const [dia, mes, ano, hora, min] = data
-                     .split("-")
+                     .split('-')
                      .map(Number);
                   const DateN = new Date(Date.now()).getFullYear();
-                  if (h.type === "entrada" && ano === DateN) {
+                  if (h.type === 'entrada' && ano === DateN) {
                      return h;
                   }
                })
@@ -433,26 +454,26 @@ export function Inicio() {
             const mp = 3242222780 / 1000 + MontateAtual;
 
             setMontanteP(
-               MontatePass.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-               })
+               MontatePass.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+               }),
             );
 
             setMontante(
-               mp.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-               })
+               mp.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+               }),
             );
 
             const total = data.reduce((acc, item) => {
                return acc + Number(item.valor);
             }, 0);
 
-            const price = total.toLocaleString("pt-BR", {
-               style: "currency",
-               currency: "BRL",
+            const price = total.toLocaleString('pt-BR', {
+               style: 'currency',
+               currency: 'BRL',
             });
 
             const pts = data.length * 10;
@@ -471,14 +492,15 @@ export function Inicio() {
    useFocusEffect(
       useCallback(() => {
          load();
-      }, [load])
+         token();
+      }, [load]),
    );
 
    useEffect(() => {
-      const myString = "23,43.22.34";
+      const myString = '23,43.22.34';
       const splits = myString.split(/(\d)/);
 
-      console.log(splits.filter((h) => h === "."));
+      console.log(splits.filter(h => h === '.'));
    }, []);
 
    useFocusEffect(
@@ -501,16 +523,16 @@ export function Inicio() {
          orderIndication.length,
          orderTransaction.length,
          sucess.length,
-      ])
+      ]),
    );
 
    return (
       <Container>
          <View
             style={{
-               flexDirection: "row",
-               alignItems: "center",
-               justifyContent: "space-between",
+               flexDirection: 'row',
+               alignItems: 'center',
+               justifyContent: 'space-between',
             }}
          >
             <TouchableOpacity
@@ -535,7 +557,7 @@ export function Inicio() {
 
          <TitleName> {user.nome} </TitleName>
 
-         <View style={{ alignItems: "center" }}>
+         <View style={{ alignItems: 'center' }}>
             <ComprasText>Vendas</ComprasText>
 
             <BoxPrice>
@@ -546,7 +568,7 @@ export function Inicio() {
             </BoxPrice>
          </View>
 
-         <View style={{ alignSelf: "center" }}>
+         <View style={{ alignSelf: 'center' }}>
             <Text style={{ marginLeft: 16 }}>Vendas do G.E.B {montante}</Text>
          </View>
 
@@ -555,15 +577,15 @@ export function Inicio() {
             snapPoint={300}
             modalHeight={450}
             modalStyle={{
-               width: "90%",
-               alignSelf: "center",
+               width: '90%',
+               alignSelf: 'center',
             }}
          >
             <View>
                <TouchableOpacity
                   onPress={ClosedModalSucess}
                   style={{
-                     alignSelf: "flex-end",
+                     alignSelf: 'flex-end',
                      marginRight: 10,
                      Vending: 10,
                   }}
@@ -575,7 +597,7 @@ export function Inicio() {
                   />
                </TouchableOpacity>
 
-               {sucess.map((h) => (
+               {sucess.map(h => (
                   <View key={h.id} style={{ padding: 20 }}>
                      <Text>
                         Sucesso! {h.nome} esta negociando com o cliente que voce
@@ -589,10 +611,10 @@ export function Inicio() {
                         style={{
                            width: 80,
                            height: 30,
-                           alignSelf: "center",
-                           alignItems: "center",
+                           alignSelf: 'center',
+                           alignItems: 'center',
                            backgroundColor: theme.colors.focus,
-                           justifyContent: "center",
+                           justifyContent: 'center',
                            borderRadius: 7,
                         }}
                      >
@@ -610,15 +632,15 @@ export function Inicio() {
             ref={modalRef}
             snapPoint={400}
             modalStyle={{
-               width: "90%",
-               alignSelf: "center",
+               width: '90%',
+               alignSelf: 'center',
             }}
          >
             <View>
                <TouchableOpacity
                   onPress={ClosedModal}
                   style={{
-                     alignSelf: "flex-end",
+                     alignSelf: 'flex-end',
                      marginRight: 10,
                      padding: 10,
                   }}
@@ -629,7 +651,7 @@ export function Inicio() {
                      color={theme.colors.focus}
                   />
                </TouchableOpacity>
-               {orderIndication.map((h) => (
+               {orderIndication.map(h => (
                   <View key={h.id}>
                      <ModalOrderIndication
                         description={h.descricao}
@@ -654,15 +676,15 @@ export function Inicio() {
             ref={modalB2b}
             snapPoint={400}
             modalStyle={{
-               width: "90%",
-               alignSelf: "center",
+               width: '90%',
+               alignSelf: 'center',
             }}
          >
             <View>
                <TouchableOpacity
                   onPress={ClosedModal}
                   style={{
-                     alignSelf: "flex-end",
+                     alignSelf: 'flex-end',
                      marginRight: 10,
                      padding: 10,
                   }}
@@ -673,7 +695,7 @@ export function Inicio() {
                      color={theme.colors.focus}
                   />
                </TouchableOpacity>
-               {orderB2b.map((h) => (
+               {orderB2b.map(h => (
                   <View key={h.data.nanoseconds}>
                      <ModalB2b
                         clientName={h.nome}
@@ -692,15 +714,15 @@ export function Inicio() {
             ref={modalTransaction}
             snapPoint={300}
             modalStyle={{
-               width: "90%",
-               alignSelf: "center",
+               width: '90%',
+               alignSelf: 'center',
             }}
          >
             <View>
                <TouchableOpacity
                   onPress={ClosedModal}
                   style={{
-                     alignSelf: "flex-end",
+                     alignSelf: 'flex-end',
                      marginRight: 10,
                      padding: 10,
                   }}
@@ -711,7 +733,7 @@ export function Inicio() {
                      color={theme.colors.focus}
                   />
                </TouchableOpacity>
-               {orderTransaction.map((h) => (
+               {orderTransaction.map(h => (
                   <View key={h.id}>
                      <MessageComponent
                         confirmar={() => {
@@ -720,7 +742,7 @@ export function Inicio() {
                               h.consumidor,
                               h.description,
                               h.id,
-                              h.valor
+                              h.valor,
                            );
                         }}
                         nome={h.nome}

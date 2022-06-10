@@ -1,26 +1,26 @@
 /* eslint-disable camelcase */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, ScrollView, Text, View } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { FlatList, ScrollView, Text, View } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { Form } from "@unform/mobile";
-import fire from "@react-native-firebase/firestore";
-import { HeaderContaponent } from "../../components/HeaderComponent";
-import { Container } from "./styles";
-import { MembrosComponents } from "../../components/MembrosCompornents";
-import { useAuth } from "../../hooks/AuthContext";
-import { IUserDto } from "../../dtos";
-import { Box } from "../FindMembro/styles";
-import { InputCasdastro } from "../../components/InputsCadastro";
-import { colecao } from "../../collection";
-import { Loading } from "../../components/Loading";
+import { Form } from '@unform/mobile';
+import fire from '@react-native-firebase/firestore';
+import { HeaderContaponent } from '../../components/HeaderComponent';
+import { Container } from './styles';
+import { MembrosComponents } from '../../components/MembrosCompornents';
+import { useAuth } from '../../hooks/AuthContext';
+import { IUserDto } from '../../dtos';
+import { Box } from '../FindMembro/styles';
+import { InputCasdastro } from '../../components/InputsCadastro';
+import { colecao } from '../../collection';
+import { Loading } from '../../components/Loading';
 
 export function Membros() {
    const { navigate } = useNavigation();
    const { user, listUser } = useAuth();
 
    const [membros, setMembros] = useState<IUserDto[]>([]);
-   const [value, setValue] = useState("");
+   const [value, setValue] = useState('');
    const [lista, setLista] = useState<IUserDto[]>([]);
    const [load, setLoad] = useState(true);
 
@@ -30,9 +30,9 @@ export function Membros() {
          avatar_url: string,
          logoUrl: string,
          nome: string,
-         workName: string
+         workName: string,
       ) => {
-         navigate("Transaction", {
+         navigate('Transaction', {
             prestador_id,
             avatar_url,
             logoUrl,
@@ -40,7 +40,7 @@ export function Membros() {
             workName,
          });
       },
-      [navigate]
+      [navigate],
    );
 
    useFocusEffect(
@@ -52,17 +52,17 @@ export function Membros() {
          });
          setMembros(us);
          setLoad(false);
-      }, [])
+      }, []),
    );
 
    useEffect(() => {
-      if (value === "") {
+      if (value === '') {
          setLista(membros);
       } else {
          setLista(
-            membros.filter((h) => {
+            membros.filter(h => {
                return h.nome.indexOf(value) > -1;
-            })
+            }),
          );
       }
    }, [membros, value]);
@@ -81,8 +81,8 @@ export function Membros() {
                         name="find"
                         icon="search"
                         type="custom"
-                        options={{ mask: "****************************" }}
-                        onChangeText={(text) => setValue(text)}
+                        options={{ mask: '****************************' }}
+                        onChangeText={text => setValue(text)}
                         value={value}
                      />
                   </Box>
@@ -92,7 +92,7 @@ export function Membros() {
                   <FlatList
                      contentContainerStyle={{ paddingBottom: 570 }}
                      data={lista}
-                     keyExtractor={(h) => h.id}
+                     keyExtractor={h => h.id}
                      renderItem={({ item: h }) => (
                         <>
                            <MembrosComponents
@@ -103,7 +103,7 @@ export function Membros() {
                                     h.avatarUrl,
                                     h.logoUrl,
                                     h.nome,
-                                    h.workName
+                                    h.workName,
                                  )
                               }
                               userName={h.nome}
